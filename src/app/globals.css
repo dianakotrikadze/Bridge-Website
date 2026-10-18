@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply bg-ivory text-ink font-sans antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    font-feature-settings: "kern";
+  }
+  h1, h2, h3, h4 {
+    @apply font-display text-forest;
+    font-variation-settings: "wdth" 92;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  :focus-visible {
+    outline: 3px solid theme("colors.gold.DEFAULT");
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  ::selection { background: theme("colors.sage.300"); color: theme("colors.forest.900"); }
+}
+
+@layer components {
+  .h-display { font-size: clamp(2.25rem, 5vw, 3.9rem); font-weight: 600; letter-spacing: -0.015em; line-height: 1.06; }
+  .h-section { font-size: clamp(1.85rem, 3.4vw, 2.75rem); font-weight: 600; letter-spacing: -0.01em; }
+  .h-card { font-size: clamp(1.6rem, 2.2vw, 1.95rem); font-weight: 600; }
+  .lead { @apply text-ink-muted; font-size: clamp(1.075rem, 1.4vw, 1.25rem); line-height: 1.6; }
+  .section { @apply py-20 md:py-28; }
+
+  .btn {
+    @apply inline-flex min-h-[3rem] items-center justify-center gap-2 rounded-full px-6 text-[0.98rem] font-semibold transition-[background-color,color,box-shadow,transform] duration-200;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { @apply bg-forest text-ivory shadow-soft hover:bg-forest-700 hover:shadow-lift; }
+  .btn-gold { @apply bg-gold text-forest-900 hover:bg-[#d3aa52]; }
+  .btn-outline { @apply border border-forest/25 bg-white/60 text-forest hover:border-forest hover:bg-white; }
+  .btn-ghost-light { @apply border border-ivory/30 text-ivory hover:bg-ivory/10; }
+
+  .link { @apply font-semibold text-forest underline decoration-gold decoration-2 underline-offset-4 transition-colors hover:text-gold-600; }
+
+  .field-label { @apply mb-1.5 block font-semibold text-forest; }
+  .field {
+    @apply w-full rounded-tile border border-forest/20 bg-white px-4 py-3 text-ink shadow-[inset_0_1px_2px_rgba(30,59,44,.05)] transition-colors placeholder:text-ink-muted/60 hover:border-forest/40 focus:border-forest focus:outline-none focus:ring-4 focus:ring-sage-300/60;
+  }
+  .field[aria-invalid="true"] { @apply border-red-700 focus:ring-red-200; }
+  .field-hint { @apply mt-1.5 text-sm text-ink-muted; }
+  .field-error { @apply mt-1.5 flex items-start gap-1.5 text-sm font-semibold text-red-800; }
+}
+
+/* ── Hero bridge: one orchestrated load sequence ───────────────────── */
+.bridge-arc { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s .2s cubic-bezier(.6,.1,.2,1) forwards; }
+.bridge-plank { opacity: 0; transform-box: fill-box; transform-origin: center bottom; animation: plank .5s cubic-bezier(.2,.8,.2,1.2) forwards; }
+.bridge-traveller { offset-rotate: 0deg; animation: travel 9s 2.4s ease-in-out infinite; opacity: 0; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes plank { from { opacity: 0; transform: translateY(10px) scaleY(.4); } to { opacity: 1; transform: none; } }
+@keyframes travel {
+  0% { offset-distance: 0%; opacity: 0; }
+  8% { opacity: 1; }
+  50% { offset-distance: 100%; opacity: 1; }
+  58%, 100% { offset-distance: 100%; opacity: 0; }
+}
+
+/* Journey path draws once when scrolled into view */
+.journey-line { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.6s cubic-bezier(.6,.1,.2,1); }
+.in-view .journey-line { stroke-dashoffset: 0; }
+.journey-step { opacity: .35; transition: opacity .5s ease; }
+.in-view .journey-step { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .bridge-arc, .journey-line { stroke-dashoffset: 0; }
+  .bridge-plank, .journey-step { opacity: 1; }
+  .bridge-traveller { display: none; }
+}
